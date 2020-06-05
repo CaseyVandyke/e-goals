@@ -18,9 +18,36 @@ router.route('/add').post((req, res) => {
         description,
         achieveBy,
         date
-    })
+    });
     newGoal.save()
     .then(() => res.json('Goal added!'))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+router.route('/:id').get((req, res) => {
+    Goal.findById(req.params.id)
+    .then(goal => res.json(goal))
+    .catch(err => res.status(400).json('Error ' + err));
+});
+
+router.route('/:id').delete((req, res) => {
+Goal.findByIdAndDelete(req.params.id)
+.then(() => res.json('Exercise deleted.'))
+.catch(err => res.status(400).json('Error ' + err));
+});
+
+router.route('/update/:id').put((req, res) => {
+    Goal.findById(req.params.id)
+    .then(goal => {
+        goal.username = req.body.username;
+        goal.description = req.body.username;
+        goal.achieveBy = req.body.achieveBy;
+        goal.date = Date.parse(req.body.date);
+
+        goal.save()
+        .then(() => res.json('Goal updated!'))
+        .catch(err => res.status(400).json('Error: ' + err));
+    })
     .catch(err => res.status(400).json('Error: ' + err));
 })
 
